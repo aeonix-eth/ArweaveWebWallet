@@ -3,11 +3,11 @@ import path from 'path'
 import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
 import { createHtmlPlugin } from 'vite-plugin-html'
-import { viteSingleFile } from "vite-plugin-singlefile"
 import inject from '@rollup/plugin-inject'
 import svgLoader from 'vite-svg-loader'
 import pwaOptions from './pwaOptions.js'
 import { buildTypes } from './build.js'
+import { viteSingleFile } from "vite-plugin-singlefile"
 
 declare global { interface Window { BASE_URL: string } }
 
@@ -15,12 +15,12 @@ export default async (config: any) => {
 	const { command, mode } = config
 	const env = { ...process.env, ...loadEnv(mode, process.cwd()) }
 	
-	const singleFile = (() => {
+	/*const singleFile = (() => {
 		if (mode !== 'file') { return }
 		env.BASE_URL = './'
 		return viteSingleFile({ removeViteModuleLoader: true })
 	})()
-	
+	*/	
 	return defineConfig({
 		base: env.BASE_URL ?? '/',
 		plugins: [
@@ -28,7 +28,8 @@ export default async (config: any) => {
 			createHtmlPlugin({ inject: { data: { ...env } }, minify: true }),
 			svgLoader({ svgoConfig: { multipass: true } }),
 			VitePWA(pwaOptions(env)),
-			singleFile,
+			//singleFile,
+			viteSingleFile(),
 			buildTypes,
 		],
 		resolve: { alias: { '@': path.resolve(__dirname, 'src') } },
